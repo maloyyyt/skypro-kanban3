@@ -1,3 +1,32 @@
-import React from 'react'; import {MainBlock,MainContainer,MainContent,MainRoot} from './Main.styled.js'; import Column from '../Column/Column.jsx';
-const columns=[{title:'Без статуса',cards:[['Web Design','30.10.23','orange'],['Research','30.10.23','green'],['Web Design','30.10.23','orange'],['Copywriting','30.10.23','purple'],['Web Design','30.10.23','orange']]},{title:'Нужно сделать',cards:[['Web Design','30.10.23','orange'],['Research','30.10.23','green'],['Copywriting','30.10.23','purple']]},{title:'В работе',cards:[['Research','30.10.23','green'],['Copywriting','30.10.23','purple'],['Web Design','30.10.23','orange']]},{title:'Тестирование',cards:[['Research','30.10.23','green']]},{title:'Готово',cards:[['Research','30.10.23','green']]}];
-export default function Main(){return <MainRoot><MainContainer><MainBlock><MainContent>{columns.map(c=><Column key={c.title}{...c}/>)}</MainContent></MainBlock></MainContainer></MainRoot>}
+import React from 'react';
+import { MainBlock, MainContainer, MainContent, MainRoot } from './Main.styled.js';
+import Column from '../Column/Column.jsx';
+import { useTasks } from '../../context/TasksContext.jsx';
+import { STATUSES } from '../../utils/board.js';
+
+export default function Main() {
+  const { tasks, loading, error } = useTasks();
+
+  return (
+    <MainRoot>
+      <MainContainer>
+        <MainBlock>
+          {loading && <p style={{ padding: '20px 0' }}>Загрузка задач…</p>}
+          {!loading && error && <p style={{ padding: '20px 0', color: '#FF6D6D' }}>{error}</p>}
+          {!loading && !error && (
+            <MainContent>
+              {STATUSES.map((status, i) => (
+                <Column
+                  key={status}
+                  colIndex={i}
+                  title={status}
+                  tasks={tasks.filter((t) => t.status === status)}
+                />
+              ))}
+            </MainContent>
+          )}
+        </MainBlock>
+      </MainContainer>
+    </MainRoot>
+  );
+}
