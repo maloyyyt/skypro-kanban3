@@ -1,11 +1,9 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { useAuth } from './AuthContext.jsx';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { createTask, deleteTask, getTasks, updateTask } from '../api/tasks.js';
 
-const TasksContext = createContext(null);
+export const TaskContext = createContext(null);
 
-export function TasksProvider({ children }) {
-  const { token, isAuth } = useAuth();
+export function useTaskState(token, isAuth) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -54,10 +52,9 @@ export function TasksProvider({ children }) {
     return tasks.find((t) => String(t.id) === String(id)) || null;
   }
 
-  const value = { tasks, loading, error, refresh, addTask, editTask, removeTask, getTaskById };
-  return <TasksContext.Provider value={value}>{children}</TasksContext.Provider>;
+  return { tasks, loading, error, refresh, addTask, editTask, removeTask, getTaskById };
 }
 
 export function useTasks() {
-  return useContext(TasksContext);
+  return useContext(TaskContext);
 }

@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { loginRequest, registerRequest } from '../api/auth.js';
 
 const STORAGE_KEY = 'kanban-user';
-const AuthContext = createContext(null);
+
+export const AuthContext = createContext(null);
 
 function readStoredUser() {
   try {
@@ -13,7 +14,7 @@ function readStoredUser() {
   }
 }
 
-export function AuthProvider({ children }) {
+export function useAuthState() {
   const [user, setUser] = useState(readStoredUser);
   const [authLoading, setAuthLoading] = useState(false);
 
@@ -38,8 +39,6 @@ export function AuthProvider({ children }) {
     setAuthLoading(true);
     try {
       let authUser = await registerRequest({ name, login, password });
-      // Некоторые бэкенды не возвращают токен сразу при регистрации —
-      // в этом случае логинимся тем же паролем, чтобы получить токен.
       if (!authUser) {
         authUser = await loginRequest({ login, password });
       }
@@ -56,7 +55,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const value = {
+  return {
     user,
     token: user?.token || null,
     isAuth: Boolean(user?.token),
@@ -65,9 +64,9 @@ export function AuthProvider({ children }) {
     register,
     logout,
   };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Хук для чтения контекста в компонентах: useContext спрятан здесь.
 export function useAuth() {
   return useContext(AuthContext);
 }

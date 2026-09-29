@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import PopNewCard from '../components/popups/PopNewCard.jsx';
-import { useTasks } from '../context/TasksContext.jsx';
+import { useTasks } from '../context/TaskContext.jsx';
 
 export default function NewTaskPage() {
   const navigate = useNavigate();

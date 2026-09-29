@@ -1,7 +1,7 @@
 import React from 'react';
 import { MainBlock, MainContainer, MainContent, MainRoot } from './Main.styled.js';
 import Column from '../Column/Column.jsx';
-import { useTasks } from '../../context/TasksContext.jsx';
+import { useTasks } from '../../context/TaskContext.jsx';
 import { STATUSES } from '../../utils/board.js';
 
 export default function Main() {

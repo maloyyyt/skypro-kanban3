@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PopBrowse from '../components/popups/PopBrowse.jsx';
-import { useTasks } from '../context/TasksContext.jsx';
+import { useTasks } from '../context/TaskContext.jsx';
 
 export default function ViewTaskPage() {
   const navigate = useNavigate();
