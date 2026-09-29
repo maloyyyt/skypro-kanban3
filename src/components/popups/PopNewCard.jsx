@@ -40,14 +40,14 @@ function CalendarGrid() {
     </div>
   );
 }
-export default function PopNewCard() {
+export default function PopNewCard({ onClose, onCreate }) {
   return (
     <div className="pop-new-card" id="popNewCard">
       <div className="pop-new-card__container">
         <div className="pop-new-card__block">
           <div className="pop-new-card__content">
             <h3 className="pop-new-card__ttl">Создание задачи</h3>
-            <a href="/" className="pop-new-card__close">&#10006;</a>
+            <a href="/" className="pop-new-card__close" onClick={(e) => { e.preventDefault(); onClose && onClose(); }}>&#10006;</a>
             <div className="pop-new-card__wrap">
               <form className="pop-new-card__form form-new">
                 <div className="form-new__block">
@@ -85,7 +85,7 @@ export default function PopNewCard() {
                 </div>
               </div>
             </div>
-            <button className="form-new__create _hover01" type="button">Создать задачу</button>
+            <button className="form-new__create _hover01" type="button" onClick={() => onCreate && onCreate()}>Создать задачу</button>
           </div>
         </div>
       </div>

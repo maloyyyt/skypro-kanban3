@@ -1,2 +1,7 @@
-/* Only popup styles are retained in CSS for homework 3. */
 @import url('../main.css');
+
+.pop-exit,
+.pop-new-card,
+.pop-browse {
+  display: block;
+}
