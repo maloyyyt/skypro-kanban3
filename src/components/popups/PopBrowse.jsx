@@ -5,7 +5,7 @@ function cellClass({ other, weekend, current, active }) {
   if (other) return `calendar__cell _other-month${weekend ? ' _weekend' : ''}`;
   return `calendar__cell _cell-day${weekend ? ' _weekend' : ''}${current ? ' _current' : ''}${active ? ' _active-day' : ''}`;
 }
-export default function PopBrowse() {
+export default function PopBrowse({ mode = 'view', onClose, onEdit, onSave, onCancel, onDelete }) {
   return (
     <div className="pop-browse" id="popBrowse">
       <div className="pop-browse__container">
@@ -31,7 +31,7 @@ export default function PopBrowse() {
               <form className="pop-browse__form form-browse">
                 <div className="form-browse__block">
                   <label htmlFor="textArea01" className="subttl">Описание задачи</label>
-                  <textarea className="form-browse__area" id="textArea01" readOnly placeholder="Введите описание задачи..." />
+                  <textarea className="form-browse__area" id="textArea01" readOnly={mode !== 'edit'} placeholder="Введите описание задачи..." />
                 </div>
               </form>
               <div className="pop-new-card__calendar calendar">
@@ -77,20 +77,20 @@ export default function PopBrowse() {
                 <p className="_orange">Web Design</p>
               </div>
             </div>
-            <div className="pop-browse__btn-browse">
+            <div className={`pop-browse__btn-browse${mode === 'edit' ? ' _hide' : ''}`}>
               <div className="btn-group">
-                <button className="btn-browse__edit _btn-bor _hover03"><a href="/">Редактировать задачу</a></button>
-                <button className="btn-browse__delete _btn-bor _hover03"><a href="/">Удалить задачу</a></button>
+                <button type="button" className="btn-browse__edit _btn-bor _hover03" onClick={onEdit}>Редактировать задачу</button>
+                <button type="button" className="btn-browse__delete _btn-bor _hover03" onClick={onDelete}>Удалить задачу</button>
               </div>
-              <button className="btn-browse__close _btn-bg _hover01"><a href="/">Закрыть</a></button>
+              <button type="button" className="btn-browse__close _btn-bg _hover01" onClick={onClose}>Закрыть</button>
             </div>
-            <div className="pop-browse__btn-edit _hide">
+            <div className={`pop-browse__btn-edit${mode === 'edit' ? '' : ' _hide'}`}>
               <div className="btn-group">
-                <button className="btn-edit__edit _btn-bg _hover01"><a href="/">Сохранить</a></button>
-                <button className="btn-edit__edit _btn-bor _hover03"><a href="/">Отменить</a></button>
-                <button className="btn-edit__delete _btn-bor _hover03"><a href="/">Удалить задачу</a></button>
+                <button type="button" className="btn-edit__edit _btn-bg _hover01" onClick={onSave}>Сохранить</button>
+                <button type="button" className="btn-edit__edit _btn-bor _hover03" onClick={onCancel}>Отменить</button>
+                <button type="button" className="btn-edit__delete _btn-bor _hover03" onClick={onDelete}>Удалить задачу</button>
               </div>
-              <button className="btn-edit__close _btn-bg _hover01"><a href="/">Закрыть</a></button>
+              <button type="button" className="btn-edit__close _btn-bg _hover01" onClick={onClose}>Закрыть</button>
             </div>
           </div>
         </div>
