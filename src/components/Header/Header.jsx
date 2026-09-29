@@ -7,7 +7,7 @@ export default function Header() {
   const location = useLocation();
   const { user } = useAuth();
   const displayName = (user && user.name) || 'Ivan Ivanov';
-  const displayEmail = (user && user.email) || 'ivan.ivanov@gmail.com';
+  const displayEmail = (user && user.login) || 'ivan.ivanov@gmail.com';
 
   return (
     <HeaderRoot>

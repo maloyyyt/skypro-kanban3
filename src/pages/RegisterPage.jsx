@@ -5,20 +5,33 @@ import { AuthBlock, AuthButton, AuthError, AuthForm, AuthGroup, AuthInput, AuthT
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const { register } = useAuth();
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || !password.trim()) {
+    setError('');
+    if (!name.trim() || !login.trim() || !password.trim()) {
       setError('Заполните все поля');
       return;
     }
-    login(email.trim(), name.trim());
-    navigate('/', { replace: true });
+    if (password.length < 6) {
+      setError('Пароль должен быть не короче 6 символов');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await register(name.trim(), login.trim(), password);
+      navigate('/', { replace: true });
+    } catch (err) {
+      setError(err.message || 'Не удалось зарегистрироваться');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -27,10 +40,10 @@ export default function RegisterPage() {
         <AuthTitle>Регистрация</AuthTitle>
         <AuthForm onSubmit={handleSubmit} noValidate>
           {error && <AuthError>{error}</AuthError>}
-          <AuthInput type="text" placeholder="Имя" value={name} onChange={(e) => setName(e.target.value)} />
-          <AuthInput type="text" placeholder="Эл. почта" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <AuthInput type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <AuthButton type="submit">Зарегистрироваться</AuthButton>
+          <AuthInput type="text" placeholder="Имя" value={name} onChange={(e) => setName(e.target.value)} disabled={submitting} />
+          <AuthInput type="text" placeholder="Эл. почта" value={login} onChange={(e) => setLogin(e.target.value)} disabled={submitting} />
+          <AuthInput type="password" placeholder="Пароль" value={password} onChange={(e) => setPassword(e.target.value)} disabled={submitting} />
+          <AuthButton type="submit" disabled={submitting}>{submitting ? 'Регистрируем…' : 'Зарегистрироваться'}</AuthButton>
           <AuthGroup>
             <p>Уже есть аккаунт? <Link to="/login">Войдите здесь</Link></p>
           </AuthGroup>

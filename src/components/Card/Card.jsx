@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CardContent, CardGroup, CardRoot, CardTitle, DateRow, More, Theme } from './Card.styled.js';
+import { topicColor } from '../../utils/board.js';
 
 function CalendarIcon() {
   return (
@@ -11,20 +12,20 @@ function CalendarIcon() {
   );
 }
 
-export default function Card({ id, theme, date, color }) {
+export default function Card({ task }) {
   const location = useLocation();
-  const cardLink = { pathname: `/card/${id}` };
+  const cardLink = { pathname: `/card/${task.id}` };
   const cardState = { background: location };
 
   return (
     <CardRoot>
       <CardGroup>
-        <Theme $tone={color}><p>{theme}</p></Theme>
+        <Theme $tone={topicColor(task.topic)}><p>{task.topic}</p></Theme>
         <More as={Link} to={cardLink} state={cardState} aria-label="Открыть задачу"><div /><div /><div /></More>
       </CardGroup>
       <CardContent>
-        <Link to={cardLink} state={cardState}><CardTitle>Название задачи</CardTitle></Link>
-        <DateRow><CalendarIcon /><p>{date}</p></DateRow>
+        <Link to={cardLink} state={cardState}><CardTitle>{task.title}</CardTitle></Link>
+        <DateRow><CalendarIcon /><p>{task.date}</p></DateRow>
       </CardContent>
     </CardRoot>
   );

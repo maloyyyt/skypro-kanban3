@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { loginRequest, registerRequest } from '../api/auth.js';
 
 const STORAGE_KEY = 'kanban-user';
 const AuthContext = createContext(null);
@@ -14,11 +15,40 @@ function readStoredUser() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(readStoredUser);
+  const [authLoading, setAuthLoading] = useState(false);
 
-  function login(email, name) {
-    const nextUser = { email, name: name || 'Ivan Ivanov' };
+  function persist(nextUser) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
     setUser(nextUser);
+  }
+
+  async function login(login, password) {
+    setAuthLoading(true);
+    try {
+      const authUser = await loginRequest({ login, password });
+      if (!authUser) throw new Error('Сервер не вернул токен авторизации');
+      persist(authUser);
+      return authUser;
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
+  async function register(name, login, password) {
+    setAuthLoading(true);
+    try {
+      let authUser = await registerRequest({ name, login, password });
+      // Некоторые бэкенды не возвращают токен сразу при регистрации —
+      // в этом случае логинимся тем же паролем, чтобы получить токен.
+      if (!authUser) {
+        authUser = await loginRequest({ login, password });
+      }
+      if (!authUser) throw new Error('Сервер не вернул токен авторизации');
+      persist(authUser);
+      return authUser;
+    } finally {
+      setAuthLoading(false);
+    }
   }
 
   function logout() {
@@ -26,7 +56,15 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const value = { user, isAuth: Boolean(user), login, logout };
+  const value = {
+    user,
+    token: user?.token || null,
+    isAuth: Boolean(user?.token),
+    authLoading,
+    login,
+    register,
+    logout,
+  };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
