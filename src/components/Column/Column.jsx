@@ -1,0 +1,1 @@
+import React from 'react'; import {Cards,ColumnRoot,ColumnTitle} from './Column.styled.js'; import Card from '../Card/Card.jsx'; export default function Column({title,cards}){return <ColumnRoot><ColumnTitle><p>{title}</p></ColumnTitle><Cards>{cards.map(([theme,date,color],i)=><Card key={`${title}-${i}`} theme={theme} date={date} color={color}/>)}</Cards></ColumnRoot>}
